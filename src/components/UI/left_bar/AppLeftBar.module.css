@@ -1,0 +1,9 @@
+.myLeftBar{
+  float: left;
+  flex-direction: column;
+  z-index: 100;
+  width: 35vh;
+  height: auto;
+  background: #E4EFF6;
+  position: absolute;
+}

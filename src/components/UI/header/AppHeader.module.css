@@ -1,0 +1,7 @@
+.myHeader{
+  height: 5vh;
+  background: #2980B9;
+  font-size: 15pt;
+  display: flex;
+  justify-content: space-between;
+}
