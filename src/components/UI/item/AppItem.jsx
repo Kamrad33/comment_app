@@ -3,7 +3,7 @@ import classes from './AppItem.module.css';
 
 const AppItem = ({children, ...props}) =>{
   return(
-    <div className ={children.myItem}>
+    <div {...props} className ={children.myItem}>
     {children}
     </div>
   )

@@ -1,9 +1,12 @@
 import React from 'react';
+import AppContainer from '../container/AppContainer'
 import classes from './AppInput.module.css';
 
 const AppInput =({children, ...props}) =>{
   return(
-    <input className = {classes.myInput}></input>
+
+    <textarea {...props} className = {classes.myInput}></textarea>
+    
   )
 }
 export default AppInput;

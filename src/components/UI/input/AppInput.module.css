@@ -1,0 +1,7 @@
+.myInput {
+  height: 8vh;
+  width: 100%;
+  padding: 3px;
+  border-radius: 4px;
+  resize: none;
+}

@@ -3,7 +3,7 @@ import classes from './AppLeftBar.module.css';
 
 const AppLeftBar = ({children, ...props}) =>{
   return(
-    <div className = {classes.myLeftBar}>{children}</div>
+    <div {...props} className = {classes.myLeftBar}>{children}</div>
   )
 }
 

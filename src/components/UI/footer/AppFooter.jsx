@@ -3,7 +3,7 @@ import classes from './AppFooter.module.css';
 
 const AppFooter = ({children, ...props}) =>{
   return(
-    <div className = {classes.myFooter}>
+    <div {...props} className = {classes.myFooter}>
     {children}
     </div>
   )
