@@ -1,5 +1,6 @@
 .myContent{
-  height: 85vh;
+  height: auto;
+  max-height: 85vh;
   overflow: auto;
   background: #AFCFE5;
 }

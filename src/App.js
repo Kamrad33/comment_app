@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './styles/App.css';
 import axios from 'axios';
 import AppHeader from './components/UI/header/AppHeader'
@@ -12,10 +12,10 @@ import AppItem from './components/UI/item/AppItem'
 import CommentItem from './components/CommentItem'
 import CommentList from './components/CommentList'
 function App() {
-  let i = 0;
 
   const [messageText, setMessageText] = useState();
   const [limit, setLimit] = useState(5);
+  const [answerKey, setAnswerKey] = useState(0);
   const [comments, setComments] = useState([
     {id: 1, user_name: '1', comment_text:'text comment ayaya', comment_date:'december', message_root:'0'},
     {id: 2, user_name: 'vasya', comment_text:'text comment ayaya', comment_date:'december',message_root:'1'},
@@ -34,13 +34,20 @@ function App() {
     {id: 16, user_name: '16', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
     {id: 17, user_name: '17', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
     {id: 18, user_name: '18', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
-
+    {id: 19, user_name: '19', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
+    {id: 20, user_name: '20', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
+    {id: 21, user_name: '21', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
+    {id: 22, user_name: '22', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
+    {id: 23, user_name: '23', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
+    {id: 24, user_name: '24', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
+    {id: 25, user_name: '25', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
+    {id: 26, user_name: '26', comment_text:'text comment ayaya', comment_date:'december',message_root:'0'},
   ]);
-function upLimit() {
-  if (comments.length > limit){
-  setLimit(limit+5);
-};
-}
+
+useEffect( () =>{
+  console.log('USE EFF');
+  loadMessages();
+}, [])
 
 function loadMessages() {
   axios.post('http://localhost:1348/loadMessages', {
@@ -59,28 +66,70 @@ function loadMessages() {
     console.log('COMENTS STATE: ', JSON.parse(JSON.stringify(res.data)));
     setComments(JSON.parse(JSON.stringify(res.data)))
     console.log('COMENTS after:', comments);
+  }).catch((error)=>{
+    console.warn('error', error);
   })
+};
 
-}
+
 function sendMessage() {
-  console.log('show message text', messageText);
-axios.get('http://localhost:1348/testReq', {
-  method: 'GET',
+  let date;
+  date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+  console.log("KRUTA123", date);
+  let messageData = JSON.stringify({
+    user_name: 'vasya',
+    user_id: 3,
+    comment_text: messageText,
+    comment_date: date,
+    message_root: answerKey,
+
+  });
+  console.log("KRUTA",messageData);
+  loadMessages();
+  loadMessages();
+  //let dateMessage = Date.now();
+
+axios.post('http://localhost:1348/sendMessage', {
+  user_name: 'vasya',
+  user_id: 3,
+  comment_text: messageText,
+  comment_date: date,
+  message_root: answerKey.id,
+
+  method: 'POST',
   mode: 'no-cors',
   bodyUsed: true,
   headers:{
-
+    'Access-Control-Allow-Origin':'*',
+    "Access-Control-Allow-Methods":"GET, PUT, POST, DELETE",
+    "Access-Control-Allow-Headers":"Origin, X-Requested-With, Content-Type, Accept, Authorization",
+    'Content-Type': 'application/json',
   },
 }).then(res =>{
   console.log('works');
+  loadMessages();
+
 }).catch((error)=>{
   console.warn('error', error);
 })
+
 };
+
+const answerMessage =(id) =>{
+  //let ans = comments.filter(comment => comment.id == id).map(filtredComment => filtredComment.comment_text);
+  let ans = comments.filter(comment => comment.id == id);
+  console.log('OUE', id);
+  console.log('test', ans);
+  console.log('test2', ans[0].id);
+  setAnswerKey(ans[0]);
+  console.log('key', answerKey);
+}
   return (
     <div className="App">
+    <AppContainer >
     <AppHeader>
-      <AppButton onClick = {upLimit}>
+      <AppButton >
         Rooms
       </AppButton>
       Header
@@ -102,52 +151,87 @@ axios.get('http://localhost:1348/testReq', {
         </AppItem>
       </AppContent>
     </AppLeftBar>
+    <AppContainer style ={{
+      height:'90vh',
 
+      minHeight:'75vh',
+      display: 'flex',
+      flexDirection:'column',
+      justifyContent:'space-between'
+    }}>
     <AppContent>
-
-    { (comments.filter(comment => comment.message_root == 0).slice(0,limit).map(filtredComment =>(
-
+    {(comments.filter(comment => comment.message_root == 0).slice(0,limit).map(filtredComment =>(
           <div>
-          <CommentItem comment = {filtredComment} key={filtredComment.id}/>
-          <CommentList comments = {comments} idKey={filtredComment.id}/>
+          <CommentItem comment = {filtredComment} key={filtredComment.id} answer ={answerMessage}/>
+          {comments.filter(comment =>comment.message_root == filtredComment.id) !=0 ?
+            <CommentList comments = {comments} idKey={filtredComment.id} answerKey ={answerMessage}/>
+          : <div></div>}
           </div>
-
     )))}
-    {
-    comments.length >= limit ?
-    <AppContent style ={{height: '10%'}}>
-    <AppButton onClick = {upLimit}>
+
+    {limit < comments.length && comments.length - limit > 5  ?
+    <AppContainer>
+    <AppButton onClick = {()=>setLimit(limit + 5)}>
     Развернуть
     </AppButton>
-    </AppContent>
-    : <div></div>
-  }
+    </AppContainer>
+    : <div></div>}
+
     </AppContent>
 
     <AppFooter>
+    {/*<CommentItem comment = {comments[2]} key={1} answer ={answerMessage} />*/}
+{ answerKey != 0 ?
+    <AppContainer style={{
+      width: 'auto',
+      display: 'flex',
+      flexDirection:'row',
+      justifyContent: 'space-between',
+      margin:'5px'
+    }}>
+    <AppContainer style ={{
+      background: 'grey',
+      height: 'auto',
+      margin:'5px',
+      width: '50vh',
+    }}>{answerKey.comment_text}</AppContainer>
+    <AppContainer style={{
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      width: '6vh',
+    }}>
+    <AppButton style ={{
+      width: 'auto',
+    }}
+    onClick ={() => setAnswerKey(0)}>X</AppButton>
+    </AppContainer>
+    </AppContainer>
+    : <div></div>
+  }
     <div style ={{
       display:'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
-
       width: '100%',
-      height: '100%',
+      height:'auto',
     }}>
-    <AppContainer style ={{
 
+    <AppContainer style ={{
       width: '85vw',
+      height:'auto',
       margin: '5px',
       justifyContent: 'center',
     }}>
+
     <AppInput
     value = {messageText}
     placeholder ='Напишите текст'
-    onChange={e => setMessageText(e.target.value)}/>
+    onChange={(e) => setMessageText(e.target.value)}/>
     </AppContainer>
     <AppContainer style ={{
 
-
       width: '5vw',
+      height:'auto',
       minWidth: '50px',
       margin: '5px',
       justifyContent: 'center',
@@ -158,9 +242,10 @@ axios.get('http://localhost:1348/testReq', {
     </AppContainer>
     </div>
     </AppFooter>
+    </AppContainer>
+    </AppContainer>
     </div>
   );
 }
 
 export default App;
-//

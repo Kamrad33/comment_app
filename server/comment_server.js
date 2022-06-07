@@ -49,5 +49,16 @@ app.post('/loadMessages', async function(req, res, next){
 });
 
 app.post('/sendMessage', async function(req, res, next){
-  pool.query()
-})
+  if (!req.body) return res.sendStatus(400);
+  const user_name = req.body.user_name;
+  const user_id = req.body.user_id;
+  const comment_text = req.body.comment_text;
+  const comment_date = req.body.comment_date;
+  const message_root = req.body.message_root;
+  pool.query('INSERT INTO messages (user_name, user_id, comment_text, comment_date, message_root) VALUES (?,?,?,?,?)', [user_name, user_id, comment_text, comment_date, message_root], function(err, rows, fields) {
+    if(err) return console.log(err);
+    else {
+      console.log(rows);
+      res.send(rows);
+    }});
+});

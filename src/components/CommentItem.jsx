@@ -1,11 +1,19 @@
 import React from 'react';
-import AppContainer from './UI/container/AppContainer'
-const CommentItem =(props) =>{
+import AppContainer from './UI/container/AppContainer';
+import AppButton from './UI/button/AppButton';
+
+const CommentItem =({comment, key, answer}) =>{
+
+  const ansMsg = (e) => {
+    e.preventDefault()
+    answer(comment.id)
+  }
   return(
     <div className ='comment_item' style = {{
       margin: '5px',
       height: 'auto',
-      background: 'grey',}}>
+      background: 'grey',
+      borderRadius:'10px'}}>
 
       <AppContainer style ={{
         display:'flex',
@@ -18,7 +26,7 @@ const CommentItem =(props) =>{
         flexDirection:'column',
       }}>
       <div className ='user_icon'>Icon</div>
-      <div className ='user_name'>{props.comment.user_name}</div>
+      <div className ='user_name'>{comment.user_name}</div>
       </AppContainer>
 
       <AppContainer style ={{
@@ -27,14 +35,14 @@ const CommentItem =(props) =>{
         flexDirection:'column',
       }}>
         <text className ='comment_text'>
-        {props.comment.comment_text}
+        {comment.comment_text}
         </text>
       <div className ='text_info' style ={{
         display: 'flex',
       }}>
-      <div className ='comment_date'>{props.comment.comment_date}</div>
-      <button>Развернуть</button>
-      <button>ответить</button>
+      <div className ='comment_date'>{comment.comment_date}</div>
+      <AppButton>Развернуть</AppButton>
+      <AppButton onClick ={ansMsg}>Ответить</AppButton>
       </div>
 
       </AppContainer>
